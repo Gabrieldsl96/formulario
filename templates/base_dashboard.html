@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div x-data="{ open: true }" class="flex h-screen bg-gray-50">
+
+    <!-- Sidebar -->
+    <aside :class="open ? 'w-64' : 'w-16'" class="bg-slate-900 flex flex-col transition-all duration-300 ease-in-out flex-shrink-0">
+        <!-- Logo / Toggle -->
+        <div class="flex items-center justify-between px-4 py-4 border-b border-slate-700">
+            <span x-show="open" class="text-white font-bold text-lg tracking-tight" style="display:none;">Formulário</span>
+            <button @click="open = !open" class="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Nav Links -->
+        <nav class="flex-1 px-2 py-4 space-y-1">
+            <!-- Dashboard -->
+            <a href="{% url 'pagina_inicial:index' %}"
+               class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                      text-slate-300 hover:text-white hover:bg-slate-700/60 transition-all duration-200
+                      {% block nav_pagina_inicial %}{% endblock %}">
+                <svg class="flex-shrink-0 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span x-show="open" class="whitespace-nowrap" style="display:none;">Dashboard</span>
+            </a>
+
+            <!-- Produtos -->
+            <a href="{% url 'produtos:list' %}"
+               class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                      text-slate-300 hover:text-white hover:bg-slate-700/60 transition-all duration-200
+                      {% block nav_produtos %}{% endblock %}">
+                <svg class="flex-shrink-0 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+                <span x-show="open" class="whitespace-nowrap" style="display:none;">Produtos</span>
+            </a>
+        </nav>
+
+        <!-- User / Logout -->
+        <div class="px-2 py-4 border-t border-slate-700">
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                               text-slate-300 hover:text-white hover:bg-red-600/20 transition-all duration-200">
+                    <svg class="flex-shrink-0 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span x-show="open" class="whitespace-nowrap" style="display:none;">Sair</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <h1 class="text-xl font-semibold text-gray-900">{% block page_title %}Página{% endblock %}</h1>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500">Olá, <span class="font-medium text-gray-700">{{ request.user.username }}</span></span>
+            </div>
+        </header>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="px-6 pt-4 space-y-2">
+            {% for message in messages %}
+            <div x-data="{ show: true }" x-show="show"
+                 class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium
+                        {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200
+                        {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200
+                        {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-800 border border-yellow-200
+                        {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                <span>{{ message }}</span>
+                <button @click="show = false" class="ml-4 opacity-60 hover:opacity-100 transition-opacity">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto p-6">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-200 px-6 py-3">
+            <p class="text-xs text-gray-400 text-center">Formulário &copy; {% now "Y" %}</p>
+        </footer>
+    </div>
+</div>
+{% endblock %}

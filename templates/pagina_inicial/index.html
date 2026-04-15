@@ -1,0 +1,66 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Dashboard — Formulário{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_pagina_inicial %}text-white bg-indigo-600/20 border border-indigo-500/30{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Boas-vindas -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900">Olá, {{ request.user.first_name|default:request.user.username }}!</h2>
+        <p class="text-gray-500 mt-1">Bem-vindo ao painel de controle.</p>
+    </div>
+
+    <!-- Cards de estatísticas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Total de Produtos -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total de Produtos</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ total_produtos }}</p>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                </div>
+            </div>
+            <a href="{% url 'produtos:list' %}" class="mt-4 text-xs font-medium text-indigo-600 hover:text-indigo-700 transition-colors inline-flex items-center gap-1">
+                Ver todos os produtos
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Ação rápida -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-base font-semibold text-gray-900 mb-4">Ações rápidas</h3>
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'produtos:create' %}"
+               class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white
+                      font-semibold py-2.5 px-5 rounded-xl transition-all duration-200
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-sm shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Cadastrar Produto
+            </a>
+            <a href="{% url 'produtos:list' %}"
+               class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700
+                      font-medium py-2.5 px-5 rounded-xl border border-gray-300 transition-colors text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                </svg>
+                Ver Produtos
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
